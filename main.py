@@ -1,6 +1,9 @@
 import os
 import arrow
 
+from typing import List
+from pydantic import Field
+
 import smtplib, ssl
 from email.message import EmailMessage
 
@@ -38,21 +41,18 @@ app = FastAPI(
 
 # Cấu hình chung
 class Settings(BaseSettings):
-    postgres_url: str = os.getenv('POSTGRES_URL')  # Đường dẫn kết nối cơ sở dữ liệu PostgreSQL
-    discord_webhook_url: str = os.getenv('DISCORD_WEBHOOK_URL')  # Đường dẫn webhook Discord để nhận thông báo
-    email_subject: str = os.getenv('EMAIL_SUBJECT')  # Tiêu đề email thông báo
-    sender_name: str = os.getenv('SENDER_NAME')  # Tên người gửi (Tên của website)
-    sender_email: str = os.getenv('SENDER_EMAIL')  # Địa chỉ email dùng để gửi thông báo khi người dùng gửi form
-    recipient_name: str = os.getenv('RECIPIENT_NAME')  # Tên người nhận thông báo khi người dùng gửi form
-    recipient_email: str = os.getenv('RECIPIENT_EMAIL')  # Địa chỉ email nhận thông báo khi người dùng gửi form
-    smtp_server: str = os.getenv('SMTP_SERVER')  # SMTP server
-    smtp_port: int = int(os.getenv('SMTP_PORT', 0))  # Cổng SMTP
-    smtp_username: str = os.getenv('SMTP_USERNAME')  # Tên đăng nhập SMTP
-    smtp_password: str = os.getenv('SMTP_PASSWORD')  # Mật khẩu SMTP
-    origins_urls: list = [
-        os.getenv(f'ORIGINS_URL_{i+1}') for i in range(int(os.getenv('ORIGINS_URL_COUNT', '10')))
-        if os.getenv(f'ORIGINS_URL_{i+1}')
-    ] # Danh sách URL được phép gọi API
+    postgres_url: str
+    discord_webhook_url: str
+    email_subject: str
+    sender_name: str
+    sender_email: str
+    recipient_name: str
+    recipient_email: str
+    smtp_server: str
+    smtp_port: int
+    smtp_username: str
+    smtp_password: str
+    origins_urls: List[str] = Field(default_factory=list)
 
 config = Settings()
 
