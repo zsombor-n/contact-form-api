@@ -160,13 +160,23 @@ async def submit_contact_form(
     name: str = Form(...),
     email: str = Form(...),
     phone: str = Form(...),
+    company: str = Form(...),
     title: str = Form(...),
     message: str = Form(...)
 ):
     """
     API gửi form liên hệ
     """
-    send_message = f"[{config.sender_name}] New contact form submission:\n\n *Time: {timestamp}*\n\n- Name: {name}\n- Email: {email}\n- Phone: {phone}\n- Title: {title}\n- Message:\n\n{message}"
+    send_message = (
+    f"[{config.sender_name}] New contact form submission:\n\n"
+    f"*Time: {timestamp}*\n\n"
+    f"- Company: {company}\n"
+    f"- Name: {name}\n"
+    f"- Email: {email}\n"
+    f"- Phone: {phone}\n"
+    f"- Title: {title}\n"
+    f"- Message:\n\n{message}"
+    )
     send_email(config, send_message, name, email)
     await send_discord_notification(config, send_message)
     save_to_postgresql(name, email, phone, title, message)
